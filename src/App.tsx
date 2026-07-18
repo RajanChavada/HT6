@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import Onboarding from './screens/Onboarding'
 import CreateMarket from './screens/CreateMarket'
 import MarketView from './screens/MarketView'
-import { useSession } from './core/auth'
+import { useSession, signOut } from './core/auth'
 
 export default function App() {
   const session = useSession()
@@ -30,7 +30,15 @@ export default function App() {
     <div className="min-h-screen bg-slate-950 text-slate-100">
       <header className="flex items-center justify-between border-b border-white/10 px-6 py-3">
         <div className="text-lg font-semibold tracking-tight">Stakes</div>
-        <div className="text-sm text-slate-400">Logged in as <span className="text-white font-medium">{session.name}</span></div>
+        <div className="flex items-center gap-4">
+          <div className="text-sm text-slate-400">Logged in as <span className="text-white font-medium">{session.name}</span></div>
+          <button
+            onClick={() => { void signOut() }}
+            className="rounded-md border border-white/15 px-3 py-1 text-sm text-slate-300 hover:bg-white/10"
+          >
+            Sign out
+          </button>
+        </div>
       </header>
       <CreateMarket
         creatorId={session.id}

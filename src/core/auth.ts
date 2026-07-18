@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react'
 import { getProfile, saveProfile, generateFriendCode } from './users'
+import * as supabaseAuth from './supabaseAuth'
 
 export interface UserSession {
   id: string
   name: string
   avatarBase64?: string
+  accessToken?: string
 }
 
 // Per-session identity. We key off sessionStorage (NOT localStorage) so each
@@ -62,4 +64,52 @@ export function updateProfile(id: string, patch: { name?: string; avatarBase64?:
   if (existing) saveProfile({ ...existing, ...patch })
   const session = getSession()
   if (session && session.id === id) saveSession({ ...session, ...patch })
+}
+
+// True when real Supabase Auth is configured; false → use the guest signIn flow.
+export const authEnabled = supabaseAuth.authEnabled
+
+// Turn a Supabase auth result into a session keyed on the auth uid, provisioning
+// (or recovering) the matching profile. A returning user keeps their existing
+// name/friends because the profile is keyed to the stable uid.
+function establishSession(
+  result: supabaseAuth.AuthResult,
+  fallbackName: string,
+): UserSession {
+  const existing = getProfile(result.userId)
+  const name = existing?.name ?? fallbackName
+  const session: UserSession = { id: result.userId, name, accessToken: result.accessToken }
+  saveSession(session)
+  if (existing) {
+    saveProfile({ ...existing, id: result.userId, name })
+  } else {
+    saveProfile({ id: result.userId, name, friendCode: generateFriendCode(), friends: [] })
+  }
+  return session
+}
+
+export async function signUpWithEmail(
+  email: string,
+  password: string,
+  name: string,
+): Promise<UserSession> {
+  const result = await supabaseAuth.signUp(email, password)
+  return establishSession(result, name || email)
+}
+
+export async function signInWithEmail(email: string, password: string): Promise<UserSession> {
+  const result = await supabaseAuth.signInWithPassword(email, password)
+  return establishSession(result, email)
+}
+
+export async function signOut(): Promise<void> {
+  const session = getSession()
+  if (session?.accessToken) {
+    try {
+      await supabaseAuth.signOut(session.accessToken)
+    } catch {
+      // network hiccup on logout — clear locally regardless
+    }
+  }
+  clearSession()
 }
