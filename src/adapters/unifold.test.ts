@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest'
 import { makeUnifold } from './unifold'
 
 describe('unifold mock', () => {
-  const u = makeUnifold({ unifold: false, solana: false, elevenlabs: false, gemini: false })
+  const u = makeUnifold({ unifold: false, solana: false, elevenlabs: false, backboard: false })
   it('mock deposit is deterministic and marked mocked', async () => {
     const r = await u.deposit('maya', 20)
     expect(r).toEqual({ ok: true, ref: 'mock:maya:20', mocked: true })

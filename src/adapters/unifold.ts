@@ -15,7 +15,6 @@ export function makeUnifold(flags: IntegrationFlags) {
 
       // LIVE: Unifold deposit into escrow/pool vault
       const secretKey = getEnv('VITE_UNIFOLD_SECRET_KEY')
-      const pubKey = getEnv('VITE_UNIFOLD_API_KEY')
 
       try {
         const res = await fetch(`${UNIFOLD_API}/payment_intents`, {

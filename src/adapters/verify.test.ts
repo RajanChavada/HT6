@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest'
 import { makeVerifier } from './verify'
 import { seedDemoMarket } from '../core/store'
 
-const off = { unifold: false, solana: false, elevenlabs: false, gemini: false }
+const off = { unifold: false, solana: false, elevenlabs: false, backboard: false }
 
 describe('verify mock', () => {
   it('passes when evidence mentions 5 PRs', async () => {

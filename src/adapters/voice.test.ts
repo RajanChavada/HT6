@@ -7,7 +7,7 @@ describe('voice', () => {
     expect(commissionerLine(180, 4, 2, 3)).toContain('3 days left')
   })
   it('mock line returns a bundled clip marked mocked', async () => {
-    const v = makeVoice({ unifold: false, solana: false, elevenlabs: false, gemini: false })
+    const v = makeVoice({ unifold: false, solana: false, elevenlabs: false, backboard: false })
     const r = await v.line('hello')
     expect(r.mocked).toBe(true)
     expect(r.text).toBe('hello')

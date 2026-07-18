@@ -6,7 +6,6 @@ import { potVisual } from '../core/potVisual'
 
 interface PotProps {
   potValue: number
-  maxValue: number
   deadlinePressure: number
   burst?: 'success' | 'failure' | null
 }
@@ -52,8 +51,8 @@ function PressureRing({ v }: { v: ReturnType<typeof potVisual> }) {
   )
 }
 
-export default function Pot({ potValue, maxValue, deadlinePressure, burst }: PotProps) {
-  const v = potVisual(potValue, maxValue, deadlinePressure)
+export default function Pot({ potValue, deadlinePressure, burst }: PotProps) {
+  const v = potVisual(potValue, deadlinePressure)
   return (
     <div className="relative mx-auto aspect-square w-[300px]" data-testid="pot">
       <Canvas camera={{ position: [0, 0, 5] }} gl={{ antialias: true }}>

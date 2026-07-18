@@ -26,11 +26,12 @@ export function makeVerifier(flags: IntegrationFlags) {
         `You are a neutral judge for a commitment market called "Stakes".`,
         `The creator set this goal: "${market.goal}"`,
         `Deadline: ${market.deadlineIso}`,
+        `Current Time: ${new Date().toISOString()}`,
         ``,
         `The evidence submitted is:`,
         `"${evidence}"`,
         ``,
-        `Based on the evidence, did the creator meet the goal?`,
+        `Based on the evidence AND the current time, did the creator meet the goal BEFORE the deadline? If the current time is past the deadline and they haven't met the goal, they fail.`,
         `Respond ONLY with a JSON object: { "success": true/false, "reason": "one-sentence explanation" }`,
       ].join('\n')
 

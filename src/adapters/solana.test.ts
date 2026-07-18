@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest'
 import { makeSolana } from './solana'
 
 describe('solana mock', () => {
-  const s = makeSolana({ unifold: false, solana: false, elevenlabs: false, gemini: false })
+  const s = makeSolana({ unifold: false, solana: false, elevenlabs: false, backboard: false })
   it('records one mock receipt per payout', async () => {
     const rs = await s.record([
       { toUserId: 'you', amount: 50, kind: 'creator' },

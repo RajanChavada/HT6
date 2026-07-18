@@ -6,9 +6,24 @@ vi.mock('./core/config', async (importOriginal) => {
   const orig = await importOriginal() as Record<string, unknown>
   return {
     ...orig,
-    flags: { unifold: false, solana: false, elevenlabs: false, gemini: false },
+    flags: { unifold: false, solana: false, elevenlabs: false, backboard: false },
     getEnv: () => { throw new Error('tests should not call getEnv') },
   }
+})
+
+// Force mock session and route
+vi.mock('./core/auth', () => ({
+  useSession: () => ({ id: 'u1', name: 'TestUser' })
+}))
+
+beforeEach(() => {
+  // Mock window.location
+  Object.defineProperty(window, 'location', {
+    value: {
+      search: '?market=m-demo'
+    },
+    writable: true
+  })
 })
 
 import App from './App'

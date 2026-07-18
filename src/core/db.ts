@@ -49,7 +49,7 @@ export function useLiveMarket(marketId: string | undefined): Market | undefined 
     if (!marketId) return
 
     function handleUpdate() {
-      setMarket(getMarket(marketId))
+      if (marketId) setMarket(getMarket(marketId))
     }
 
     window.addEventListener('storage', handleUpdate)

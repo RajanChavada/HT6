@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { seedDemoMarket, addStake } from '../core/store'
+import { useLiveMarket, saveMarket } from '../core/db'
 import { computePools, settle } from '../core/settle'
 import { describeReceipt } from '../core/receipts'
 import { flags } from '../core/config'
@@ -10,8 +10,11 @@ import type { Market, StakeSide } from '../core/types'
 
 export type Phase = 'open' | 'settling' | 'done'
 
-export function useStakesMachine() {
-  const [market, setMarket] = useState<Market>(() => seedDemoMarket())
+export function useStakesMachine(marketId?: string) {
+  // If no marketId is provided, we default to the demo market "m-demo" for test compatibility
+  const activeId = marketId || 'm-demo'
+  const market = useLiveMarket(activeId)
+
   const [phase, setPhase] = useState<Phase>('open')
   const [success, setSuccess] = useState<boolean | null>(null)
   const [receipts, setReceipts] = useState<string[]>([])
@@ -21,13 +24,15 @@ export function useStakesMachine() {
   const solana = useMemo(() => makeSolana(flags), [])
   const verifier = useMemo(() => makeVerifier(flags), [])
 
-  const pools = computePools(market)
+  const pools = market ? computePools(market) : { escrow: 0, support: 0, doubt: 0 }
 
   async function stake(userId: string, side: StakeSide, amount: number) {
+    if (!market) return
     setError(null)
     try {
       await unifold.deposit(userId, amount)
-      setMarket(m => addStake(m, { userId, side, amount }))
+      const updatedMarket = { ...market, stakes: [...market.stakes, { userId, side, amount }] }
+      saveMarket(updatedMarket)
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Deposit failed'
       setError(msg)
@@ -36,6 +41,7 @@ export function useStakesMachine() {
   }
 
   async function runSettlement(evidence: string) {
+    if (!market) return
     setError(null)
     setPhase('settling')
     try {
@@ -44,7 +50,8 @@ export function useStakesMachine() {
       const txs = await solana.record(payouts)
       setSuccess(verdict.success)
       setReceipts(txs.map(describeReceipt))
-      setMarket(m => ({ ...m, status: verdict.success ? 'settled_success' : 'settled_failure' }))
+      const updatedMarket: Market = { ...market, status: verdict.success ? 'settled_success' : 'settled_failure' }
+      saveMarket(updatedMarket)
       setPhase('done')
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Settlement failed'
