@@ -1,0 +1,52 @@
+[
+  {
+    "id": "bill-splitter",
+    "name": "Bill Splitter",
+    "classifierPrompt": "Is this a restaurant bill, store receipt, or invoice?",
+    "extractionSchema": { "$schema": "receipt" },
+    "templatePagePath": "/templates/BillSplitter",
+    "author": "builtin",
+    "isBuiltIn": true,
+    "usageCount": 0
+  },
+  {
+    "id": "code-review",
+    "name": "Code Reviewer",
+    "classifierPrompt": "Is this a code screenshot, terminal output, or IDE view?",
+    "extractionSchema": { "$schema": "code" },
+    "templatePagePath": "/templates/CodeReview",
+    "author": "builtin",
+    "isBuiltIn": true,
+    "usageCount": 0
+  },
+  {
+    "id": "debug-assistant",
+    "name": "Debug Assistant",
+    "classifierPrompt": "Is this an error message, stack trace, or crash report?",
+    "extractionSchema": { "$schema": "error" },
+    "templatePagePath": "/templates/DebugAssistant",
+    "author": "builtin",
+    "isBuiltIn": true,
+    "usageCount": 0
+  },
+  {
+    "id": "kanban-board",
+    "name": "Kanban Board",
+    "classifierPrompt": "Is this a whiteboard, sticky notes, or a diagram of tasks?",
+    "extractionSchema": { "$schema": "whiteboard" },
+    "templatePagePath": "/templates/KanbanBoard",
+    "author": "builtin",
+    "isBuiltIn": true,
+    "usageCount": 0
+  },
+  {
+    "id": "generic-view",
+    "name": "Smart Data View",
+    "classifierPrompt": "Fallback for any other structured content.",
+    "extractionSchema": { "$schema": "other" },
+    "templatePagePath": "/templates/GenericView",
+    "author": "builtin",
+    "isBuiltIn": true,
+    "usageCount": 0
+  }
+]

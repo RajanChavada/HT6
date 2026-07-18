@@ -1,0 +1,9 @@
+{
+  "error_type": "TypeError",
+  "message": "Cannot read properties of undefined (reading 'map')",
+  "file": "src/components/UserList.tsx",
+  "line": 42,
+  "stack_trace": "TypeError: Cannot read properties of undefined (reading 'map')\n    at UserList (src/components/UserList.tsx:42:23)\n    at renderWithHooks (react-dom.development.js:16305:18)\n    at mountIndeterminateComponent (react-dom.development.js:20074:13)",
+  "probable_cause": "The `users` prop is undefined on first render because the fetch has not resolved yet, so `users.map` throws.",
+  "suggested_fix": "Default the prop (`users = []`) or guard with `users?.map(...)` and render a loading state until data arrives."
+}

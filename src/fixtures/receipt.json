@@ -1,0 +1,13 @@
+{
+  "store_name": "The Grouse Nest",
+  "date": "2026-07-17",
+  "items": [
+    { "name": "Truffle Fries", "quantity": 1, "price": 11.0 },
+    { "name": "Wagyu Burger", "quantity": 2, "price": 24.0 },
+    { "name": "Craft Lemonade", "quantity": 3, "price": 6.0 }
+  ],
+  "subtotal": 77.0,
+  "tax": 10.01,
+  "tip": 15.4,
+  "total": 102.41
+}

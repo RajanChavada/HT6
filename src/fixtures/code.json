@@ -1,0 +1,25 @@
+{
+  "language": "python",
+  "code": "def divide(a, b):\n    return a / b\n\nresult = divide(10, 0)\nprint(result)",
+  "issues": [
+    {
+      "severity": "error",
+      "line": 5,
+      "message": "Division by zero: divide(10, 0) raises ZeroDivisionError at runtime.",
+      "suggestion": "Guard against b == 0 before dividing, or wrap the call in try/except."
+    },
+    {
+      "severity": "warning",
+      "line": 1,
+      "message": "Function has no type hints.",
+      "suggestion": "Annotate as divide(a: float, b: float) -> float for clarity."
+    },
+    {
+      "severity": "info",
+      "line": 2,
+      "message": "No docstring.",
+      "suggestion": "Add a one-line docstring describing the return value."
+    }
+  ],
+  "summary": "A simple divide function with an unguarded division-by-zero on line 5."
+}

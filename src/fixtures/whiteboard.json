@@ -1,0 +1,7 @@
+{
+  "columns": [
+    { "title": "To Do", "cards": ["Wire up camera capture", "Design bill-split UI", "Solana devnet keypair"] },
+    { "title": "In Progress", "cards": ["Gemini classify endpoint", "Materialization shader"] },
+    { "title": "Done", "cards": ["Repo scaffold", "Template registry schema"] }
+  ]
+}
