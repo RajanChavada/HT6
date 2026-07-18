@@ -36,7 +36,7 @@ const SCATTER = [
 // which coin indices (modulo 12) become loose coins on the ground
 const SCATTER_MOD = new Set([2, 7, 11, 5]);
 
-export default function BlobVisualization({ pool = 0, back = 0, doubt = 0, title = "" }) {
+export default function BlobVisualization({ pool = 0, back = 0, doubt = 0, title = "", interactive = true }) {
   const mountRef = useRef(null);
   const targetCount = useRef(1);
   const zoomRef = useRef(3.4);
@@ -254,26 +254,28 @@ export default function BlobVisualization({ pool = 0, back = 0, doubt = 0, title
   }, [title]);
 
   return (
-    <div className="relative w-full max-w-[340px] aspect-square mx-auto rounded-xl overflow-hidden" style={{ minHeight: 280, background: "#000000" }}>
+    <div className={`relative w-full mx-auto rounded-xl overflow-hidden ${interactive ? 'max-w-[340px] aspect-square' : 'aspect-video'}`} style={{ minHeight: interactive ? 280 : 160, background: "#000000" }}>
       <div ref={mountRef} className="w-full h-full" />
-      <div className="absolute right-3 bottom-3 flex flex-col gap-2">
-        <button
-          type="button"
-          onClick={() => { zoomRef.current = Math.max(2.2, zoomRef.current - 0.4); }}
-          className="w-9 h-9 rounded-full bg-black/60 border border-white/20 text-white flex items-center justify-center hover:bg-black/80 transition-colors"
-          aria-label="Zoom in"
-        >
-          <Plus className="w-4 h-4" />
-        </button>
-        <button
-          type="button"
-          onClick={() => { zoomRef.current = Math.min(6.5, zoomRef.current + 0.4); }}
-          className="w-9 h-9 rounded-full bg-black/60 border border-white/20 text-white flex items-center justify-center hover:bg-black/80 transition-colors"
-          aria-label="Zoom out"
-        >
-          <Minus className="w-4 h-4" />
-        </button>
-      </div>
+      {interactive && (
+        <div className="absolute right-3 bottom-3 flex flex-col gap-2">
+          <button
+            type="button"
+            onClick={(e) => { e.preventDefault(); e.stopPropagation(); zoomRef.current = Math.max(2.2, zoomRef.current - 0.4); }}
+            className="w-9 h-9 rounded-full bg-black/60 border border-white/20 text-white flex items-center justify-center hover:bg-black/80 transition-colors"
+            aria-label="Zoom in"
+          >
+            <Plus className="w-4 h-4" />
+          </button>
+          <button
+            type="button"
+            onClick={(e) => { e.preventDefault(); e.stopPropagation(); zoomRef.current = Math.min(6.5, zoomRef.current + 0.4); }}
+            className="w-9 h-9 rounded-full bg-black/60 border border-white/20 text-white flex items-center justify-center hover:bg-black/80 transition-colors"
+            aria-label="Zoom out"
+          >
+            <Minus className="w-4 h-4" />
+          </button>
+        </div>
+      )}
     </div>
   );
 }

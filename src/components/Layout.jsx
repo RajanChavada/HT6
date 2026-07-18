@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 
 const navItems = [
   { to: "/", label: "Home", icon: HomeIcon, end: true },
-  { to: "/private", label: "Private", icon: Lock },
   { to: "/create", label: "New Bet", icon: Plus },
   { to: "/feed", label: "Feed", icon: Compass },
   { to: "/leaderboard", label: "Leaderboard", icon: Trophy },
@@ -21,11 +20,13 @@ export default function Layout() {
     <div className="min-h-screen bg-slate-50/50">
       {/* Sidebar - desktop */}
       <aside className="hidden md:flex fixed inset-y-0 left-0 w-64 flex-col border-r border-slate-200 bg-white">
-        <div className="flex items-center gap-2 px-6 h-16 border-b border-slate-100">
-          <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
-            <Target className="w-4 h-4 text-primary-foreground" />
+        <div className="flex items-center justify-between px-6 h-16 border-b border-slate-100">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
+              <Target className="w-4 h-4 text-primary-foreground" />
+            </div>
+            <span className="font-semibold text-slate-900 tracking-tight">StakeOnIt</span>
           </div>
-          <span className="font-semibold text-slate-900 tracking-tight">StakeOnIt</span>
         </div>
         <nav className="flex-1 px-3 py-4 space-y-1">
           {navItems.map((item) => (
@@ -48,6 +49,12 @@ export default function Layout() {
           ))}
         </nav>
         <div className="px-3 py-4 border-t border-slate-100">
+          <div className="flex items-center gap-2 px-3 py-2 mb-2 bg-gradient-to-r from-purple-500/10 to-emerald-500/10 rounded-lg border border-purple-500/20">
+            <div className="w-5 h-5 rounded-full bg-black flex items-center justify-center">
+              <span className="text-[10px] text-white font-bold tracking-tighter">SOL</span>
+            </div>
+            <span className="text-xs font-semibold bg-gradient-to-r from-purple-600 to-emerald-600 bg-clip-text text-transparent">Powered by Solana Devnet</span>
+          </div>
           <div className="flex items-center gap-2 px-3 py-2">
             <div className="w-8 h-8 rounded-full bg-gradient-to-br from-violet-400 to-blue-500 flex items-center justify-center text-white text-xs font-semibold">
               {(user?.full_name || user?.email || "U").charAt(0).toUpperCase()}

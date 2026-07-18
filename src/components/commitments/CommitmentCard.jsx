@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { Coins, Clock, TrendingUp, TrendingDown, Users } from "lucide-react";
 import CategoryBadge from "./CategoryBadge";
 import StatusBadge from "./StatusBadge";
+import BlobVisualization from "./BlobVisualization";
 import { formatDeadline, isUrgent } from "@/utils/commitments";
 
 export default function CommitmentCard({ commitment }) {
@@ -11,6 +12,7 @@ export default function CommitmentCard({ commitment }) {
   const backersCount = (commitment.backers || []).length;
   const backTotal = commitment.back_total || 0;
   const doubtTotal = commitment.doubt_total || 0;
+  const totalPool = commitment.pool_total || commitment.stake_amount || 0;
   const tint =
     backTotal > doubtTotal
       ? "bg-emerald-50/60 ring-emerald-200/60 hover:ring-emerald-300"
@@ -29,32 +31,25 @@ export default function CommitmentCard({ commitment }) {
         to={`/commitment/${commitment.id}`}
         className={`block rounded-2xl ring-1 shadow-sm hover:shadow-md hover:ring-2 transition-all overflow-hidden ${tint}`}
       >
-        <div className="p-5">
-          <div className="flex items-start justify-between gap-3 mb-3">
-            <div className="flex items-center gap-2 flex-wrap">
-              <CategoryBadge category={commitment.category} />
-              <StatusBadge status={commitment.status} />
-            </div>
-            <div className="text-right shrink-0">
-              <div className="flex items-center gap-1 text-slate-900 font-semibold">
-                <Coins className="w-3.5 h-3.5 text-amber-500" />
-                <span className="text-sm">{commitment.stake_amount}</span>
-                <span className="text-xs text-slate-400 font-normal">USDC</span>
+        <div className="p-0">
+          <div className="p-5 pb-3">
+            <div className="flex items-start justify-between gap-3 mb-3">
+              <div className="flex items-center gap-2 flex-wrap">
+                <CategoryBadge category={commitment.category} />
+                <StatusBadge status={commitment.status} />
               </div>
             </div>
-          </div>
 
-          <h3 className="text-base font-semibold text-slate-900 leading-snug mb-1.5 line-clamp-2">
-            {commitment.title}
-          </h3>
-          {commitment.description && (
-            <p className="text-sm text-slate-500 line-clamp-2 mb-4">
-              {commitment.description}
-            </p>
-          )}
-
-          <div className="flex items-center justify-between pt-3 border-t border-slate-100">
-            <div className="flex items-center gap-3 text-xs text-slate-500">
+            <h3 className="text-base font-semibold text-slate-900 leading-snug mb-1.5 line-clamp-2">
+              {commitment.title}
+            </h3>
+            {commitment.description && (
+              <p className="text-sm text-slate-500 line-clamp-2 mb-2">
+                {commitment.description}
+              </p>
+            )}
+            
+            <div className="flex items-center gap-3 text-xs text-slate-500 mb-3">
               <span className="flex items-center gap-1">
                 <Clock className={`w-3.5 h-3.5 ${urgent ? "text-rose-500" : "text-slate-400"}`} />
                 {formatDeadline(commitment.deadline)}
@@ -64,15 +59,34 @@ export default function CommitmentCard({ commitment }) {
                 {backersCount}
               </span>
             </div>
-            <div className="flex items-center gap-3 text-xs font-medium">
-              <span className="flex items-center gap-1 text-emerald-600">
-                <TrendingUp className="w-3.5 h-3.5" />
-                {commitment.back_total || 0}
-              </span>
-              <span className="flex items-center gap-1 text-rose-500">
-                <TrendingDown className="w-3.5 h-3.5" />
-                {commitment.doubt_total || 0}
-              </span>
+          </div>
+
+          <div className="bg-[#0a0e14] text-white p-4">
+            <div className="mb-2 flex items-center justify-between">
+              <span className="text-xs text-slate-400 uppercase font-semibold tracking-wider">The Pot</span>
+              <div className="flex items-center gap-1 font-bold text-2xl text-amber-400">
+                <Coins className="w-5 h-5" />
+                {totalPool} <span className="text-sm text-slate-400 font-normal">USDC (SPL)</span>
+              </div>
+            </div>
+            
+            <div className="w-full mb-3 pointer-events-none">
+              <BlobVisualization pool={totalPool} title={commitment.title} interactive={false} />
+            </div>
+
+            <div className="flex justify-between text-sm">
+              <div className="flex flex-col">
+                <span className="text-[10px] text-slate-500 uppercase tracking-wide">Escrow</span>
+                <span className="font-semibold text-amber-400">{commitment.stake_amount}</span>
+              </div>
+              <div className="flex flex-col items-center">
+                <span className="text-[10px] text-slate-500 uppercase tracking-wide">Backing</span>
+                <span className="font-semibold text-emerald-400 flex items-center"><TrendingUp className="w-3 h-3 mr-0.5"/>{backTotal}</span>
+              </div>
+              <div className="flex flex-col items-end">
+                <span className="text-[10px] text-slate-500 uppercase tracking-wide">Doubt</span>
+                <span className="font-semibold text-rose-400 flex items-center"><TrendingDown className="w-3 h-3 mr-0.5"/>{doubtTotal}</span>
+              </div>
             </div>
           </div>
         </div>
