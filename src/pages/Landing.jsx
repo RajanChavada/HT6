@@ -29,22 +29,16 @@ export default function Landing() {
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-8">
           <Button asChild size="lg" className="h-12 px-6 bg-primary hover:bg-primary/90">
-            <Link to="/private">
-              <Lock className="w-4 h-4 mr-2" /> Join / Host a session
+            <Link to="/create">
+              <Lock className="w-4 h-4 mr-2" /> Lock in a Goal
             </Link>
           </Button>
           <Button asChild size="lg" variant="outline" className="h-12 px-6">
             <Link to="/feed">
-              <Compass className="w-4 h-4 mr-2" /> Explore commitments
+              <Compass className="w-4 h-4 mr-2" /> Explore the Feed
             </Link>
           </Button>
         </div>
-        <p className="text-xs text-slate-400 mt-4 flex items-center justify-center gap-1.5">
-          <ArrowRight className="w-3.5 h-3.5" /> Or{" "}
-          <Link to="/create" className="text-primary font-medium hover:underline">
-            create your own bet
-          </Link>
-        </p>
       </motion.div>
 
       {/* How it works */}
@@ -67,23 +61,6 @@ export default function Landing() {
         </div>
       </div>
 
-      {/* CTA */}
-      <div className="text-center mt-12 md:mt-16">
-        <h2 className="text-2xl font-bold text-slate-900 tracking-tight">Ready to stake on yourself?</h2>
-        <p className="text-slate-500 mt-2">Pick a path below and make it happen.</p>
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-6">
-          <Button asChild className="h-11 px-6 bg-primary hover:bg-primary/90">
-            <Link to="/private">
-              <Lock className="w-4 h-4 mr-2" /> Start a private session
-            </Link>
-          </Button>
-          <Button asChild variant="outline" className="h-11 px-6">
-            <Link to="/feed">
-              <TrendingUp className="w-4 h-4 mr-2" /> Browse the public feed
-            </Link>
-          </Button>
-        </div>
-      </div>
     </div>
   );
 }
