@@ -178,5 +178,16 @@ export const base44 = {
   entities: {
     Session: makeEntity('sessions'),
     Commitment: makeEntity('commitments'),
+    RecurringCommitment: makeEntity('recurring_commitments'),
+  },
+  functions: {
+    invoke: async (name, data) => {
+      console.log(`[Mock Base44] Invoked function: ${name}`, data)
+      return { data: { success: true } }
+    },
+    fetch: async (path, init) => {
+      console.log(`[Mock Base44] Fetched function: ${path}`, init)
+      return new Response(JSON.stringify({ success: true }))
+    }
   },
 }
