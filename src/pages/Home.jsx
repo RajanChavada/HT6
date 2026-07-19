@@ -64,22 +64,22 @@ export default function Home() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-3 gap-3 md:gap-6 mb-10">
+      <div className="grid grid-cols-3 gap-2 md:gap-6 mb-10">
         {stats.map((s, idx) => (
           <motion.div 
             key={s.label}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: idx * 0.1 }}
-            className="glass-panel glass-panel-hover rounded-3xl p-5 md:p-6 relative overflow-hidden group"
+            className="glass-panel glass-panel-hover rounded-2xl md:rounded-3xl p-3 md:p-6 relative overflow-hidden group flex flex-col justify-between"
           >
             <div className={`absolute -right-4 -top-4 w-24 h-24 rounded-full blur-3xl opacity-20 transition-opacity group-hover:opacity-40 bg-current ${s.color}`} />
-            <s.icon className={`w-5 h-5 mb-4 ${s.color} relative z-10`} />
-            <div className="flex items-baseline gap-1 relative z-10">
-              <span className="text-2xl md:text-4xl font-black text-slate-800 tracking-tighter">{s.value}</span>
-              {s.unit && <span className="text-xs text-slate-500 font-semibold">{s.unit}</span>}
+            <s.icon className={`w-4 h-4 md:w-5 md:h-5 mb-2 md:mb-4 ${s.color} relative z-10`} />
+            <div className="flex flex-col lg:flex-row lg:items-baseline gap-0 lg:gap-1 relative z-10">
+              <span className="text-xl md:text-4xl font-black text-slate-800 tracking-tighter leading-none">{s.value}</span>
+              {s.unit && <span className="text-[9px] md:text-xs text-slate-500 font-semibold mt-1 lg:mt-0">{s.unit}</span>}
             </div>
-            <p className="text-xs font-semibold uppercase tracking-wider text-slate-500 mt-2 relative z-10">{s.label}</p>
+            <p className="text-[9px] md:text-xs font-semibold uppercase tracking-wider text-slate-500 mt-2 relative z-10 leading-tight">{s.label}</p>
           </motion.div>
         ))}
       </div>
