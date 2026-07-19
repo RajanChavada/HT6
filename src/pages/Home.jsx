@@ -21,7 +21,6 @@ export default function Home() {
   });
 
   const visible = commitments.filter((c) => {
-    if (c.session_id) return false; // exclude private session goals
     if (filter === "active" && c.status !== "active") return false;
     if (filter === "resolved" && c.status !== "succeeded" && c.status !== "failed") return false;
     if (category !== "all" && c.category !== category) return false;
@@ -29,13 +28,13 @@ export default function Home() {
     return true;
   });
 
-  const publicCommitments = commitments.filter((c) => !c.session_id);
+  const publicCommitments = commitments;
   const totalStaked = publicCommitments.reduce((sum, c) => sum + (c.pool_total || c.stake_amount || 0), 0);
   const activeCount = publicCommitments.filter((c) => c.status === "active").length;
   const totalBackers = publicCommitments.reduce((sum, c) => sum + (c.backers || []).length, 0);
 
   const stats = [
-    { label: "Total Staked", value: totalStaked.toLocaleString(), unit: "USDC", icon: Coins, color: "text-amber-500" },
+    { label: "Total Staked", value: totalStaked.toLocaleString(), unit: "USDC (SPL)", icon: Coins, color: "text-amber-500" },
     { label: "Active Goals", value: activeCount, icon: Target, color: "text-violet-500" },
     { label: "Backers", value: totalBackers, icon: Users, color: "text-blue-500" },
   ];

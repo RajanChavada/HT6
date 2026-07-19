@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { Coins, Calendar, FileText, Tag, ArrowLeft, Loader2, Globe, Lock } from "lucide-react";
 import { base44 } from "@/api/base44Client";
+import { sendMockSolanaTransaction } from "@/lib/solanaMock";
 import { useAuth } from "@/lib/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,14 +20,7 @@ export default function CreateCommitment() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { toast } = useToast();
-  const sessionId = new URLSearchParams(window.location.search).get("session");
   const [loading, setLoading] = useState(false);
-
-  const { data: session } = useQuery({
-    queryKey: ["session", sessionId],
-    queryFn: () => base44.entities.Session.get(sessionId),
-    enabled: !!sessionId,
-  });
   const [form, setForm] = useState({
     title: "",
     description: "",
@@ -55,10 +49,17 @@ export default function CreateCommitment() {
         pool_total: Number(form.stake_amount),
         back_total: 0,
         doubt_total: 0,
-        session_id: sessionId || "",
+        back_total: 0,
+        doubt_total: 0,
       });
-      toast({ title: "Commitment staked!", description: "Your goal is live. Go make it happen." });
-      navigate(sessionId ? `/session/${sessionId}` : "/feed");
+
+      const signature = await sendMockSolanaTransaction();
+      
+      toast({ 
+        title: "Commitment staked on Solana!", 
+        description: `Your goal is live. Signature: ${signature.substring(0, 8)}...` 
+      });
+      navigate("/feed");
     } catch (err) {
       toast({ title: "Something went wrong", description: err.message, variant: "destructive" });
     } finally {
@@ -84,27 +85,9 @@ export default function CreateCommitment() {
         </p>
 
         {/* Visibility banner */}
-        <div
-          className={`flex items-center gap-2.5 rounded-xl px-4 py-3 mb-8 text-sm ${
-            sessionId
-              ? "bg-violet-50 text-violet-800 ring-1 ring-violet-200"
-              : "bg-sky-50 text-sky-800 ring-1 ring-sky-200"
-          }`}
-        >
-          {sessionId ? (
-            <>
-              <Lock className="w-4 h-4 shrink-0" />
-              <span>
-                Posting to private session
-                {session?.title ? <strong> “{session.title}”</strong> : null}. Only session members will see this.
-              </span>
-            </>
-          ) : (
-            <>
-              <Globe className="w-4 h-4 shrink-0" />
-              <span>Posting to the <strong>public feed</strong> — anyone can see and back this goal.</span>
-            </>
-          )}
+        <div className="flex items-center gap-2.5 rounded-xl px-4 py-3 mb-8 text-sm bg-sky-50 text-sky-800 ring-1 ring-sky-200">
+          <Globe className="w-4 h-4 shrink-0" />
+          <span>Posting to the <strong>public feed</strong> — anyone can see and back this goal.</span>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -156,7 +139,7 @@ export default function CreateCommitment() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
             <div className="space-y-2">
               <Label className="flex items-center gap-1.5">
-                <Coins className="w-3.5 h-3.5 text-amber-500" /> Stake (USDC)
+                <Coins className="w-3.5 h-3.5 text-amber-500" /> Stake (USDC SPL)
               </Label>
               <div className="relative">
                 <Input
@@ -223,12 +206,12 @@ export default function CreateCommitment() {
           <Button
             type="submit"
             disabled={loading}
-            className="w-full h-12 text-base bg-primary hover:bg-primary/90"
+            className="w-full h-12 text-base bg-gradient-to-r from-purple-600 to-emerald-600 hover:from-purple-700 hover:to-emerald-700 text-white border-0"
           >
             {loading ? (
-              <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Staking...</>
+              <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Confirming on Solana...</>
             ) : (
-              <>Stake {form.stake_amount || 0} USDC & commit</>
+              <>Stake {form.stake_amount || 0} USDC (SPL) & commit</>
             )}
           </Button>
         </form>

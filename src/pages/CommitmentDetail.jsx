@@ -6,6 +6,8 @@ import {
   CheckCircle2, XCircle, Loader2, Shield, Flame,
 } from "lucide-react";
 import { base44 } from "@/api/base44Client";
+import { sendMockSolanaTransaction } from "@/lib/solanaMock";
+import { useAuth } from "@/lib/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -58,9 +60,11 @@ export default function CommitmentDetail() {
       const updated = await base44.entities.Commitment.update(commitment.id, updates);
       setCommitment(updated);
       setAmount(10);
+      
+      const signature = await sendMockSolanaTransaction();
       toast({
-        title: side === "back" ? "You backed them! 🎉" : "You doubted them 🔥",
-        description: `${amount} USDC ${side === "back" ? "backing" : "against"} this goal.`,
+        title: `Staked on Solana!`,
+        description: `Successfully backed ${side}. Signature: ${signature.substring(0, 8)}...`,
       });
     } catch (err) {
       toast({ title: "Failed", description: err.message, variant: "destructive" });
@@ -72,15 +76,17 @@ export default function CommitmentDetail() {
   const resolve = async (success) => {
     setActionLoading(success ? "succeed" : "fail");
     try {
+      const signature = await sendMockSolanaTransaction();
       const updated = await base44.entities.Commitment.update(commitment.id, {
         status: success ? "succeeded" : "failed",
+        settlement_signature: signature,
       });
       setCommitment(updated);
       toast({
         title: success ? "Goal achieved! 🎉" : "Goal missed 💀",
         description: success
-          ? "Stake returned to you. Backers win the pool."
-          : "Stake lost to the doubters' pool.",
+          ? `Payout settled on Solana. Signature: ${signature.substring(0, 8)}...`
+          : `Pool settled on Solana. Signature: ${signature.substring(0, 8)}...`,
       });
     } catch (err) {
       toast({ title: "Failed", description: err.message, variant: "destructive" });
@@ -113,6 +119,8 @@ export default function CommitmentDetail() {
   const totalPool = commitment.pool_total || commitment.stake_amount || 0;
   const backTotal = commitment.back_total || 0;
   const doubtTotal = commitment.doubt_total || 0;
+  const { user } = useAuth();
+  const isCreator = user?.id === commitment.created_by_id;
 
   return (
     <div className="max-w-3xl mx-auto px-4 md:px-8 py-8 md:py-10">
@@ -128,6 +136,16 @@ export default function CommitmentDetail() {
         <div className="flex items-center gap-2 mb-3">
           <CategoryBadge category={commitment.category} />
           <StatusBadge status={commitment.status} />
+          {commitment.settlement_signature && (
+            <a
+              href={`https://explorer.solana.com/tx/${commitment.settlement_signature}?cluster=devnet`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs font-medium text-violet-600 hover:text-violet-700 hover:underline"
+            >
+              View settlement on Solana ↗
+            </a>
+          )}
         </div>
         <h1 className="text-2xl md:text-3xl font-bold text-slate-900 tracking-tight leading-tight">
           {commitment.title}
@@ -151,14 +169,21 @@ export default function CommitmentDetail() {
       </motion.div>
 
       {/* Visualization + pool */}
-      <div className="mt-6 rounded-2xl bg-[#0a0e14] p-6 md:p-8 text-white overflow-hidden">
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-xs text-slate-400 uppercase tracking-wide">The pool</span>
+      <div className="mt-6 rounded-2xl bg-[#0a0e14] p-6 md:p-8 text-white overflow-hidden shadow-xl shadow-amber-500/5">
+        <div className="flex items-center justify-between mb-6">
+          <span className="text-xs text-slate-400 uppercase font-semibold tracking-widest">The Pot</span>
           {isActive && (
             <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/15 px-2.5 py-0.5 text-xs font-medium text-emerald-400 ring-1 ring-inset ring-emerald-500/30">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" /> LIVE
             </span>
           )}
+        </div>
+
+        <div className="flex flex-col items-center justify-center mb-8">
+          <div className="flex items-center gap-2 font-bold text-6xl md:text-7xl text-amber-400 drop-shadow-xl tracking-tight">
+            <Coins className="w-10 h-10 md:w-14 md:h-14 opacity-90" />
+            {totalPool} <span className="text-2xl md:text-3xl text-slate-400 font-normal mt-4 md:mt-6">USDC</span>
+          </div>
         </div>
 
         <BlobVisualization
@@ -196,59 +221,77 @@ export default function CommitmentDetail() {
 
       {/* Back / Doubt actions */}
       {isActive && (
-        <div className="mt-6 rounded-2xl bg-white ring-1 ring-slate-200/70 p-5 md:p-6">
-          <h3 className="font-semibold text-slate-900 mb-1">Take a side</h3>
-          <p className="text-sm text-slate-500 mb-4">
-            Back them to succeed, or doubt them to fail. If they fail, doubters split the pool.
-          </p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
-            <div>
-              <Label className="text-xs text-slate-500">Your name</Label>
-              <Input
-                placeholder="Enter your name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className="mt-1"
-              />
+        <div className="mt-6 rounded-2xl bg-white ring-1 ring-slate-200/70 p-5 md:p-6 shadow-sm">
+          {isCreator ? (
+            <div className="text-center py-6">
+              <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center mx-auto mb-3">
+                <Shield className="w-6 h-6 text-slate-400" />
+              </div>
+              <h3 className="font-semibold text-slate-900 mb-2">This is your commitment</h3>
+              <p className="text-sm text-slate-500 max-w-md mx-auto mb-6">You cannot back or doubt your own goal. Share this page to get your friends to stake on you.</p>
+              <Button onClick={() => {
+                navigator.clipboard.writeText(window.location.href);
+                toast({ title: "Link copied!" });
+              }} className="bg-primary hover:bg-primary/90">
+                Share Link
+              </Button>
             </div>
-            <div>
-              <Label className="text-xs text-slate-500">Amount (USDC)</Label>
-              <Input
-                type="number"
-                min="1"
-                value={amount}
-                onChange={(e) => setAmount(e.target.value)}
-                className="mt-1"
-              />
-            </div>
-          </div>
-          <div className="grid grid-cols-2 gap-3">
-            <Button
-              onClick={() => handleStake("back")}
-              disabled={!name.trim() || !amount || actionLoading === "back"}
-              className="bg-emerald-600 hover:bg-emerald-700 h-11"
-            >
-              {actionLoading === "back" ? (
-                <Loader2 className="w-4 h-4 mr-1.5 animate-spin" />
-              ) : (
-                <TrendingUp className="w-4 h-4 mr-1.5" />
-              )}
-              Back them
-            </Button>
-            <Button
-              onClick={() => handleStake("doubt")}
-              disabled={!name.trim() || !amount || actionLoading === "doubt"}
-              variant="outline"
-              className="h-11 border-rose-200 text-rose-600 hover:bg-rose-50 hover:text-rose-700"
-            >
-              {actionLoading === "doubt" ? (
-                <Loader2 className="w-4 h-4 mr-1.5 animate-spin" />
-              ) : (
-                <TrendingDown className="w-4 h-4 mr-1.5" />
-              )}
-              Doubt them
-            </Button>
-          </div>
+          ) : (
+            <>
+              <h3 className="font-semibold text-slate-900 mb-1">Take a side</h3>
+              <p className="text-sm text-slate-500 mb-4">
+                Back them to succeed, or doubt them to fail. If they fail, doubters split the pool.
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+                <div>
+                  <Label className="text-xs text-slate-500">Your name</Label>
+                  <Input
+                    placeholder="Enter your name"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    className="mt-1"
+                  />
+                </div>
+                <div>
+                  <Label className="text-xs text-slate-500">Amount (USDC SPL)</Label>
+                  <Input
+                    type="number"
+                    min="1"
+                    value={amount}
+                    onChange={(e) => setAmount(e.target.value)}
+                    className="mt-1"
+                  />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <Button
+                  onClick={() => handleStake("back")}
+                  disabled={!name.trim() || !amount || actionLoading === "back"}
+                  className="bg-emerald-600 hover:bg-emerald-700 h-11"
+                >
+                  {actionLoading === "back" ? (
+                    <Loader2 className="w-4 h-4 mr-1.5 animate-spin" />
+                  ) : (
+                    <TrendingUp className="w-4 h-4 mr-1.5" />
+                  )}
+                  {actionLoading === "back" ? "Confirming..." : "Back them"}
+                </Button>
+                <Button
+                  onClick={() => handleStake("doubt")}
+                  disabled={!name.trim() || !amount || actionLoading === "doubt"}
+                  variant="outline"
+                  className="h-11 border-rose-200 text-rose-600 hover:bg-rose-50 hover:text-rose-700"
+                >
+                  {actionLoading === "doubt" ? (
+                    <Loader2 className="w-4 h-4 mr-1.5 animate-spin" />
+                  ) : (
+                    <TrendingDown className="w-4 h-4 mr-1.5" />
+                  )}
+                  {actionLoading === "doubt" ? "Confirming..." : "Doubt them"}
+                </Button>
+              </div>
+            </>
+          )}
         </div>
       )}
 

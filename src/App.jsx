@@ -12,8 +12,6 @@ import Landing from '@/pages/Landing';
 import CreateCommitment from '@/pages/CreateCommitment';
 import CommitmentDetail from '@/pages/CommitmentDetail';
 import Leaderboard from '@/pages/Leaderboard';
-import Private from '@/pages/Private';
-import SessionDetail from '@/pages/SessionDetail';
 import Login from '@/pages/Login';
 import Register from '@/pages/Register';
 // Add page imports here
@@ -40,8 +38,6 @@ const AuthenticatedApp = () => {
           <Route path="/feed" element={<Home />} />
           <Route path="/create" element={<CreateCommitment />} />
           <Route path="/commitment/:id" element={<CommitmentDetail />} />
-          <Route path="/private" element={<Private />} />
-          <Route path="/session/:id" element={<SessionDetail />} />
           <Route path="/leaderboard" element={<Leaderboard />} />
         </Route>
       </Route>
