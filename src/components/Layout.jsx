@@ -1,9 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import { Outlet, Link, NavLink, useNavigate } from "react-router-dom";
-import { Target, Home as HomeIcon, Plus, Trophy, LogOut, Lock, Compass } from "lucide-react";
+import { Target, Home as HomeIcon, Plus, Trophy, LogOut, Compass } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/lib/AuthContext";
-import { Button } from "@/components/ui/button";
 
 const navItems = [
   { to: "/", label: "Home", icon: HomeIcon, end: true },
@@ -15,20 +14,53 @@ const navItems = [
 export default function Layout() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const [showProfileMenu, setShowProfileMenu] = useState(false);
 
   return (
-    <div className="min-h-screen">
-      {/* Sidebar - desktop */}
-      <aside className="hidden md:flex fixed top-6 bottom-6 left-6 w-64 flex-col rounded-3xl glass-panel z-50 overflow-hidden">
-        <div className="flex items-center justify-between px-6 h-24 border-b border-white/50">
-          <Link to="/" className="flex items-center gap-2 group">
-            <div className="w-8 h-8 rounded-xl bg-amber-500 flex items-center justify-center text-white shadow-md shadow-amber-500/20 group-hover:scale-105 transition-transform">
-              <Target className="w-5 h-5" />
+    <div className="min-h-screen bg-slate-50 selection:bg-amber-200">
+      {/* Top Floating Header */}
+      <header className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between p-4 md:p-6 pointer-events-none">
+        <Link to="/" className="flex items-center gap-2 group pointer-events-auto">
+          <div className="w-8 h-8 rounded-full bg-amber-500 flex items-center justify-center text-white shadow-[0_4px_10px_rgba(245,158,11,0.3)] group-hover:scale-105 transition-transform">
+            <Target className="w-5 h-5" />
+          </div>
+          <span className="font-bold text-xl text-slate-900 tracking-tight font-display">PeerPot</span>
+        </Link>
+        
+        {/* Mobile Profile Toggle */}
+        <div className="md:hidden pointer-events-auto relative">
+          <button 
+            onClick={() => setShowProfileMenu(!showProfileMenu)}
+            className="w-10 h-10 rounded-full bg-gradient-to-br from-violet-500 to-fuchsia-600 flex items-center justify-center text-white text-sm font-bold shadow-md border-2 border-white"
+          >
+            {(user?.full_name || user?.email || "U").charAt(0).toUpperCase()}
+          </button>
+          
+          {showProfileMenu && (
+            <div className="absolute top-12 right-0 w-48 bg-white rounded-xl shadow-xl border border-slate-200 py-2 overflow-hidden">
+              <div className="px-4 py-2 border-b border-slate-100">
+                <p className="text-sm font-bold text-slate-800 truncate">{user?.full_name || "You"}</p>
+                <p className="text-xs text-slate-500 truncate">{user?.email}</p>
+              </div>
+              <button 
+                onClick={() => logout()}
+                className="w-full text-left px-4 py-2 text-sm text-rose-600 font-semibold hover:bg-rose-50 flex items-center gap-2"
+              >
+                <LogOut className="w-4 h-4" /> Sign out
+              </button>
             </div>
-            <span className="font-bold text-xl text-slate-800 tracking-tight">PeerPot</span>
-          </Link>
+          )}
         </div>
-        <nav className="flex-1 px-4 py-6 space-y-2">
+      </header>
+
+      {/* Main Content Area */}
+      <main className="pt-24 pb-32 min-h-screen">
+        <Outlet />
+      </main>
+
+      {/* Floating Bottom Dock */}
+      <div className="fixed bottom-6 left-0 right-0 z-50 flex justify-center pointer-events-none px-4">
+        <nav className="bg-white/90 backdrop-blur-md border border-slate-200/60 shadow-[0_8px_30px_rgb(0,0,0,0.08)] rounded-full px-2 py-2 flex items-center gap-1 pointer-events-auto">
           {navItems.map((item) => (
             <NavLink
               key={item.to}
@@ -36,90 +68,54 @@ export default function Layout() {
               end={item.end}
               className={({ isActive }) =>
                 cn(
-                  "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-300",
-                  isActive
-                    ? "bg-white text-slate-800 shadow-md"
-                    : "text-slate-500 hover:text-slate-900 hover:bg-white/50"
+                  "relative group flex items-center justify-center w-12 h-12 rounded-full transition-all duration-300 overflow-hidden",
+                  isActive 
+                    ? "bg-[#fdfbf7] text-amber-600" 
+                    : "text-slate-400 hover:text-slate-800 hover:bg-slate-100"
                 )
               }
+              title={item.label}
             >
-              <item.icon className="w-4 h-4" />
-              {item.label}
+              {({ isActive }) => (
+                <>
+                  <item.icon className={cn("w-5 h-5 z-10 transition-transform duration-200", isActive ? "-translate-y-1" : "group-hover:scale-110")} />
+                  {isActive && (
+                    <span className="absolute bottom-2.5 w-1 h-1 rounded-full bg-amber-500 z-10"></span>
+                  )}
+                  {/* Tooltip on hover for desktop */}
+                  <div className="absolute bottom-full mb-3 left-1/2 -translate-x-1/2 px-3 py-1.5 bg-slate-900 text-white text-[10px] font-bold tracking-wider uppercase rounded-lg opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-200 translate-y-2 group-hover:translate-y-0 hidden md:block">
+                    {item.label}
+                  </div>
+                </>
+              )}
             </NavLink>
           ))}
+          
+          <div className="w-[1px] h-8 bg-slate-200 mx-1"></div>
+          
+          {/* Profile in Dock (Desktop) */}
+          <div className="relative group hidden md:block">
+            <button className="w-12 h-12 rounded-full flex items-center justify-center transition-transform hover:scale-105">
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-violet-500 to-fuchsia-600 flex items-center justify-center text-white text-sm font-bold shadow-sm">
+                {(user?.full_name || user?.email || "U").charAt(0).toUpperCase()}
+              </div>
+            </button>
+            {/* Hover menu for profile */}
+            <div className="absolute bottom-full mb-3 right-0 w-48 bg-white rounded-xl shadow-xl border border-slate-200 py-2 opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto transition-all duration-200 translate-y-2 group-hover:translate-y-0 origin-bottom-right">
+              <div className="px-4 py-2 border-b border-slate-100">
+                <p className="text-sm font-bold text-slate-800 truncate">{user?.full_name || "You"}</p>
+                <p className="text-xs text-slate-500 truncate font-mono mt-0.5">DEVNET</p>
+              </div>
+              <button 
+                onClick={() => logout()}
+                className="w-full text-left px-4 py-2 text-sm text-rose-600 font-semibold hover:bg-rose-50 flex items-center gap-2"
+              >
+                <LogOut className="w-4 h-4" /> Sign out
+              </button>
+            </div>
+          </div>
         </nav>
-        <div className="px-4 py-6 border-t border-white/50 bg-white/30">
-          <div className="flex items-center gap-3 px-3 py-3 mb-4 rounded-xl glass-panel relative overflow-hidden group">
-            <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-emerald-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-            <div className="w-8 h-8 rounded-full bg-slate-900 border border-slate-700 flex items-center justify-center shadow-[0_0_10px_rgba(16,185,129,0.2)] z-10">
-              <span className="text-[10px] text-white font-bold tracking-tighter">SOL</span>
-            </div>
-            <div className="z-10">
-              <p className="text-[10px] text-slate-500 font-semibold uppercase tracking-wider mb-0.5">Network</p>
-              <span className="text-xs font-bold bg-gradient-to-r from-purple-600 to-emerald-600 bg-clip-text text-transparent">Solana Devnet</span>
-            </div>
-          </div>
-          <div className="flex items-center gap-3 px-3 py-2">
-            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-violet-500 to-fuchsia-600 flex items-center justify-center text-white text-sm font-bold shadow-[0_0_10px_rgba(139,92,246,0.3)] border border-white/50">
-              {(user?.full_name || user?.email || "U").charAt(0).toUpperCase()}
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-bold text-slate-800 truncate">
-                {user?.full_name || "You"}
-              </p>
-              <p className="text-xs text-slate-500 truncate">{user?.email}</p>
-            </div>
-          </div>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="w-full justify-start text-slate-500 hover:text-slate-900 hover:bg-white/50 mt-2"
-            onClick={() => logout()}
-          >
-            <LogOut className="w-4 h-4 mr-2" /> Sign out
-          </Button>
-        </div>
-      </aside>
-
-      {/* Mobile top bar */}
-      <header className="md:hidden sticky top-0 z-40 flex items-center justify-between h-16 px-4 glass-panel border-b-0 rounded-b-2xl">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-400 to-orange-600 flex items-center justify-center shadow-[0_0_10px_rgba(245,158,11,0.3)]">
-            <Target className="w-4 h-4 text-white" />
-          </div>
-          <span className="font-bold text-slate-800 tracking-tight">PeerPot</span>
-        </div>
-        <Button asChild size="sm" className="bg-white hover:bg-white/90 text-slate-800 border border-slate-200 shadow-sm">
-          <Link to="/create">
-            <Plus className="w-4 h-4 mr-1" /> New
-          </Link>
-        </Button>
-      </header>
-
-      {/* Mobile bottom nav */}
-      <nav className="md:hidden fixed bottom-4 inset-x-4 z-40 flex items-center justify-around h-16 glass-panel rounded-2xl">
-        {navItems.map((item) => (
-          <NavLink
-            key={item.to}
-            to={item.to}
-            end={item.end}
-            className={({ isActive }) =>
-              cn(
-                "flex flex-col items-center gap-1 text-[10px] font-semibold transition-colors",
-                isActive ? "text-amber-400" : "text-slate-400"
-              )
-            }
-          >
-            <item.icon className="w-5 h-5" />
-            {item.label}
-          </NavLink>
-        ))}
-      </nav>
-
-      {/* Main */}
-      <main className="md:pl-72 md:pr-8 py-8 md:py-10 pb-24 md:pb-10 min-h-screen">
-        <Outlet />
-      </main>
+      </div>
     </div>
   );
 }
