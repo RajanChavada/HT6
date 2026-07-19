@@ -118,7 +118,7 @@ export default function CreateCommitment() {
         {/* Visibility banner */}
         <div className="flex items-center gap-3 rounded-2xl px-5 py-4 mb-8 text-sm font-medium glass-panel border-sky-200 text-sky-700 shadow-[0_0_20px_rgba(14,165,233,0.1)]">
           <Globe className="w-5 h-5 shrink-0 text-sky-500" />
-          <span>Posting to the <strong className="text-slate-800">public feed</strong> — anyone can see and back this goal.</span>
+          <span>Posting to the <strong className="text-slate-800">public feed</strong>, meaning anyone can see and back this goal.</span>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">

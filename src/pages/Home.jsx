@@ -55,7 +55,7 @@ export default function Home() {
           <h1 className="text-3xl md:text-5xl font-extrabold text-slate-800 tracking-tighter mb-2">
             Public Feed
           </h1>
-          <p className="text-slate-500 text-sm md:text-base max-w-lg">Browse public commitments from the community. Stake on yourself — friends back you or doubt you.</p>
+          <p className="text-slate-500 text-sm md:text-base max-w-lg">Browse public commitments from the community. Stake on yourself and see if your friends back you or doubt you.</p>
         </div>
         <Button asChild className="hidden md:flex bg-primary hover:bg-primary/90">
           <Link to="/create">

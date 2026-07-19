@@ -10,7 +10,7 @@
     "description": {
       "type": "string",
       "title": "Description",
-      "description": "More detail about what success looks like"
+      "description": "More details about what success looks like"
     },
     "category": {
       "type": "string",

@@ -24,7 +24,7 @@ export default function Landing() {
         </h1>
         <p className="text-slate-500 mt-4 max-w-xl mx-auto text-base md:text-lg leading-relaxed">
           PeerPot lets you lock stablecoins behind any personal goal. Friends back you
-          or doubt you — hit the goal and keep your stake, miss it and the doubters split the pool.
+          or doubt you. If you hit the goal, you keep your stake, but if you miss it, the doubters split the pool.
         </p>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-8">
@@ -48,7 +48,7 @@ export default function Landing() {
           {[
             { step: "1", title: "Commit", body: "Set a goal, a deadline, and a USDC stake." },
             { step: "2", title: "Rally", body: "Friends back you to win or doubt you to fail." },
-            { step: "3", title: "Resolve", body: "Hit it — keep your stake. Miss it — doubters split the pool." },
+            { step: "3", title: "Resolve", body: "Hit your goal to keep your stake, or miss it and let the doubters split the pool." },
           ].map((s) => (
             <div key={s.step} className="text-center">
               <div className="w-9 h-9 rounded-full bg-primary text-primary-foreground font-bold flex items-center justify-center mx-auto mb-3">
