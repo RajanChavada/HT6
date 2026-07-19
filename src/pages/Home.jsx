@@ -20,18 +20,12 @@ export default function Home() {
     queryFn: () => base44.entities.Commitment.list("-created_date", 50),
   });
 
-  // Silently spawn recurring commitments on load
   useEffect(() => {
-    // ONE-TIME WIPE SCRIPT
     if (!localStorage.getItem("wiped_feed_v2")) {
       localStorage.removeItem("stakes_commitments");
       localStorage.setItem("wiped_feed_v2", "true");
       window.location.reload();
     }
-
-    base44.functions.invoke("spawn-recurring").catch((err) => {
-      console.error("Failed to spawn recurring commitments:", err);
-    });
   }, []);
 
   const visible = commitments.filter((c) => {
