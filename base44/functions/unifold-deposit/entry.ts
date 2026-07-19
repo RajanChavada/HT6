@@ -39,7 +39,7 @@ export default Deno.serve(async (req) => {
         destination_network: "base",
         recipient_address: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
         external_user_id: userId,
-        metadata: { source: "stakes-app" },
+        metadata: { source: "peerpot" },
       }),
     });
 

@@ -66,7 +66,19 @@ export default function CreateCommitment() {
       
       toast({ 
         title: depositResult.mocked ? "Staked (Mock Mode)" : "Commitment staked via Unifold!", 
-        description: `Your goal is live. Reference: ${depositResult.ref}` 
+        description: (
+          <div className="flex flex-col gap-1 mt-1">
+            <span>Your goal is live!</span>
+            <a 
+              href={depositResult.mocked ? "#" : `https://dashboard.unifold.io`} 
+              target="_blank" 
+              rel="noreferrer"
+              className="text-amber-500 underline text-xs font-bold"
+            >
+              View Reference: {depositResult.ref}
+            </a>
+          </div>
+        )
       });
       navigate("/feed");
     } catch (err) {
