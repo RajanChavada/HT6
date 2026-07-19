@@ -44,10 +44,10 @@ export default function Home() {
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-3xl md:text-5xl font-extrabold text-white tracking-tighter mb-2 text-glow">
+          <h1 className="text-3xl md:text-5xl font-extrabold text-slate-800 tracking-tighter mb-2">
             Public Feed
           </h1>
-          <p className="text-slate-400 text-sm md:text-base max-w-lg">Browse public commitments from the community. Stake on yourself — friends back you or doubt you.</p>
+          <p className="text-slate-500 text-sm md:text-base max-w-lg">Browse public commitments from the community. Stake on yourself — friends back you or doubt you.</p>
         </div>
         <Button asChild className="hidden md:flex bg-primary hover:bg-primary/90">
           <Link to="/create">
@@ -69,8 +69,8 @@ export default function Home() {
             <div className={`absolute -right-4 -top-4 w-24 h-24 rounded-full blur-3xl opacity-20 transition-opacity group-hover:opacity-40 bg-current ${s.color}`} />
             <s.icon className={`w-5 h-5 mb-4 ${s.color} relative z-10`} />
             <div className="flex items-baseline gap-1 relative z-10">
-              <span className="text-2xl md:text-4xl font-black text-white tracking-tighter">{s.value}</span>
-              {s.unit && <span className="text-xs text-slate-400 font-semibold">{s.unit}</span>}
+              <span className="text-2xl md:text-4xl font-black text-slate-800 tracking-tighter">{s.value}</span>
+              {s.unit && <span className="text-xs text-slate-500 font-semibold">{s.unit}</span>}
             </div>
             <p className="text-xs font-semibold uppercase tracking-wider text-slate-500 mt-2 relative z-10">{s.label}</p>
           </motion.div>
@@ -78,7 +78,7 @@ export default function Home() {
       </div>
 
       {/* Filter tabs */}
-      <div className="flex items-center gap-2 mb-6 bg-white/5 p-1 rounded-2xl w-fit backdrop-blur-md border border-white/10">
+      <div className="flex items-center gap-2 mb-6 bg-white/50 p-1 rounded-2xl w-fit backdrop-blur-md border border-white/60">
         {[
           { key: "all", label: "All" },
           { key: "active", label: "🔥 Active" },
@@ -89,8 +89,8 @@ export default function Home() {
             onClick={() => setFilter(tab.key)}
             className={`px-5 py-2 text-sm font-semibold rounded-xl transition-all duration-300 ${
               filter === tab.key
-                ? "bg-white/10 text-white shadow-lg"
-                : "text-slate-400 hover:text-white hover:bg-white/5"
+                ? "bg-white text-slate-800 shadow-md"
+                : "text-slate-500 hover:text-slate-900 hover:bg-white/50"
             }`}
           >
             {tab.label}
@@ -106,7 +106,7 @@ export default function Home() {
             placeholder="Search goals..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="pl-11 bg-white/5 border-white/10 text-white placeholder:text-slate-500 rounded-xl h-11 focus-visible:ring-amber-500"
+            className="pl-11 bg-white/60 border-white/50 text-slate-800 placeholder:text-slate-400 rounded-xl h-11 focus-visible:ring-amber-500"
           />
         </div>
         <div className="flex flex-wrap gap-2 flex-1">
@@ -114,8 +114,8 @@ export default function Home() {
             onClick={() => setCategory("all")}
             className={`px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all duration-300 ${
               category === "all"
-                ? "bg-amber-500 text-white shadow-[0_0_15px_rgba(245,158,11,0.4)]"
-                : "bg-white/5 text-slate-400 border border-white/10 hover:bg-white/10"
+                ? "bg-amber-500 text-white shadow-[0_0_15px_rgba(245,158,11,0.3)] border-transparent"
+                : "bg-white/50 text-slate-500 border border-white/60 hover:bg-white/80"
             }`}
           >
             All
@@ -126,8 +126,8 @@ export default function Home() {
               onClick={() => setCategory(cat)}
               className={`px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all duration-300 ${
                 category === cat
-                  ? "bg-amber-500 text-white shadow-[0_0_15px_rgba(245,158,11,0.4)]"
-                  : "bg-white/5 text-slate-400 border border-white/10 hover:bg-white/10 hover:text-white"
+                  ? "bg-amber-500 text-white shadow-[0_0_15px_rgba(245,158,11,0.3)] border-transparent"
+                  : "bg-white/50 text-slate-500 border border-white/60 hover:bg-white/80 hover:text-slate-900"
               }`}
             >
               {cat}
@@ -145,11 +145,11 @@ export default function Home() {
         </div>
       ) : visible.length === 0 ? (
         <div className="text-center py-20 glass-panel rounded-3xl">
-          <div className="w-16 h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mx-auto mb-6 shadow-xl">
+          <div className="w-16 h-16 rounded-2xl bg-white border border-slate-100 flex items-center justify-center mx-auto mb-6 shadow-md">
             <Flame className="w-8 h-8 text-amber-500" />
           </div>
-          <h3 className="text-xl font-bold text-white mb-2 tracking-tight">No commitments yet</h3>
-          <p className="text-slate-400 mb-8 max-w-md mx-auto">The arena is empty. Be the first to stake on a goal and let the community back you.</p>
+          <h3 className="text-xl font-bold text-slate-800 mb-2 tracking-tight">No commitments yet</h3>
+          <p className="text-slate-500 mb-8 max-w-md mx-auto">The arena is empty. Be the first to stake on a goal and let the community back you.</p>
           <Button asChild className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-white shadow-lg border-0">
             <Link to="/create">
               <Plus className="w-4 h-4 mr-1.5" /> Create a commitment
