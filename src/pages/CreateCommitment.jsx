@@ -28,6 +28,17 @@ export default function CreateCommitment() {
     stake_amount: 25,
     deadline: "",
   });
+  const [showCustomDate, setShowCustomDate] = useState(false);
+
+  const setDeadlinePreset = (days) => {
+    const d = new Date();
+    d.setDate(d.getDate() + days);
+    // Format to YYYY-MM-DDThh:mm
+    const tzoffset = (new Date()).getTimezoneOffset() * 60000;
+    const localISOTime = (new Date(d.getTime() - tzoffset)).toISOString().slice(0, 16);
+    update("deadline", localISOTime);
+    setShowCustomDate(false);
+  };
 
   const update = (field, value) => setForm((f) => ({ ...f, [field]: value }));
 
@@ -71,52 +82,53 @@ export default function CreateCommitment() {
     <div className="max-w-2xl mx-auto px-4 md:px-8 py-8 md:py-12">
       <button
         onClick={() => navigate(-1)}
-        className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-900 mb-6 transition-colors"
+        className="inline-flex items-center gap-1.5 text-sm font-semibold text-slate-400 hover:text-white mb-6 transition-all duration-300"
       >
         <ArrowLeft className="w-4 h-4" /> Back
       </button>
 
       <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}>
-        <h1 className="text-2xl md:text-3xl font-bold text-slate-900 tracking-tight">
+        <h1 className="text-3xl md:text-5xl font-black text-white tracking-tighter text-glow">
           Stake on a goal
         </h1>
-        <p className="text-slate-500 mt-1 mb-6">
+        <p className="text-slate-400 mt-2 mb-8 text-lg font-medium">
            Put your money where your mouth is. Friends back you or doubt you.
         </p>
 
         {/* Visibility banner */}
-        <div className="flex items-center gap-2.5 rounded-xl px-4 py-3 mb-8 text-sm bg-sky-50 text-sky-800 ring-1 ring-sky-200">
-          <Globe className="w-4 h-4 shrink-0" />
-          <span>Posting to the <strong>public feed</strong> — anyone can see and back this goal.</span>
+        <div className="flex items-center gap-3 rounded-2xl px-5 py-4 mb-8 text-sm font-medium glass-panel border-sky-500/30 text-sky-400 shadow-[0_0_20px_rgba(14,165,233,0.1)]">
+          <Globe className="w-5 h-5 shrink-0 text-sky-400" />
+          <span>Posting to the <strong className="text-white">public feed</strong> — anyone can see and back this goal.</span>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-2">
-            <Label className="flex items-center gap-1.5">
-              <FileText className="w-3.5 h-3.5 text-slate-400" /> What are you committing to?
+            <Label className="flex items-center gap-1.5 font-bold uppercase tracking-widest text-slate-400 text-xs mb-2">
+              <FileText className="w-3.5 h-3.5 text-amber-500" /> What are you committing to?
             </Label>
             <Input
               placeholder="e.g. Ship 5 PRs, finish my homework, run a 5k..."
               value={form.title}
               onChange={(e) => update("title", e.target.value)}
               required
-              className="text-base"
+              className="h-12 bg-black/40 border-white/10 text-white placeholder:text-slate-500 rounded-xl focus-visible:ring-amber-500 text-base"
             />
           </div>
 
           <div className="space-y-2">
-            <Label>Description (optional)</Label>
+            <Label className="font-bold uppercase tracking-widest text-slate-400 text-xs mb-2 block">Description (optional)</Label>
             <Textarea
               placeholder="What does success look like? Add any context your friends should know."
               value={form.description}
               onChange={(e) => update("description", e.target.value)}
               rows={3}
+              className="bg-black/40 border-white/10 text-white placeholder:text-slate-500 rounded-xl focus-visible:ring-amber-500 resize-none pt-3"
             />
           </div>
 
           <div className="space-y-2">
-            <Label className="flex items-center gap-1.5">
-              <Tag className="w-3.5 h-3.5 text-slate-400" /> Category
+            <Label className="flex items-center gap-1.5 font-bold uppercase tracking-widest text-slate-400 text-xs mb-2">
+              <Tag className="w-3.5 h-3.5 text-amber-500" /> Category
             </Label>
             <div className="flex flex-wrap gap-2">
               {CATEGORIES.map((cat) => (
@@ -124,10 +136,10 @@ export default function CreateCommitment() {
                   key={cat}
                   type="button"
                   onClick={() => update("category", cat)}
-                  className={`rounded-full px-3 py-1.5 text-xs font-medium ring-1 ring-inset transition-all ${
+                  className={`rounded-xl px-4 py-2 text-xs font-bold uppercase tracking-wider transition-all duration-300 border ${
                     form.category === cat
-                      ? "bg-emerald-700 text-white ring-emerald-700"
-                      : "bg-white text-slate-600 ring-slate-200 hover:ring-slate-300"
+                      ? "bg-amber-500 text-white border-amber-500 shadow-[0_0_15px_rgba(245,158,11,0.4)]"
+                      : "bg-white/5 text-slate-400 border-white/10 hover:bg-white/10 hover:text-white"
                   }`}
                 >
                   {cat}
@@ -136,9 +148,9 @@ export default function CreateCommitment() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div className="space-y-2">
-              <Label className="flex items-center gap-1.5">
+              <Label className="flex items-center gap-1.5 font-bold uppercase tracking-widest text-slate-400 text-xs mb-2">
                 <Coins className="w-3.5 h-3.5 text-amber-500" /> Stake (USDC SPL)
               </Label>
               <div className="relative">
@@ -148,19 +160,19 @@ export default function CreateCommitment() {
                   value={form.stake_amount}
                   onChange={(e) => update("stake_amount", e.target.value)}
                   required
-                  className="pr-12 text-base font-semibold"
+                  className="pr-12 text-lg font-black h-12 bg-black/40 border-white/10 text-white placeholder:text-slate-500 rounded-xl focus-visible:ring-amber-500"
                 />
-                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-slate-400 font-medium">
+                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs text-slate-400 font-bold uppercase">
                   USDC
                 </span>
               </div>
-              <div className="flex gap-1.5 pt-1">
+              <div className="flex gap-2 pt-2">
                 {QUICK_STAKES.map((amt) => (
                   <button
                     key={amt}
                     type="button"
                     onClick={() => update("stake_amount", amt)}
-                    className="flex-1 rounded-lg py-1 text-xs font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors"
+                    className="flex-1 rounded-lg py-1.5 text-xs font-bold bg-white/5 border border-white/10 text-slate-400 hover:bg-white/10 hover:text-white transition-all"
                   >
                     {amt}
                   </button>
@@ -169,49 +181,117 @@ export default function CreateCommitment() {
             </div>
 
             <div className="space-y-2">
-              <Label className="flex items-center gap-1.5">
-                <Calendar className="w-3.5 h-3.5 text-slate-400" /> Deadline
+              <Label className="flex items-center gap-1.5 font-bold uppercase tracking-widest text-slate-400 text-xs mb-2">
+                <Calendar className="w-3.5 h-3.5 text-amber-500" /> Deadline
               </Label>
-              <Input
-                type="datetime-local"
-                value={form.deadline}
-                onChange={(e) => update("deadline", e.target.value)}
-                required
-                min={new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16)}
-                className="text-base"
-              />
-              <p className="text-xs text-slate-400 pt-1">
+              <div className="flex gap-2 mb-2">
+                <button
+                  type="button"
+                  onClick={() => setDeadlinePreset(1)}
+                  className={`flex-1 rounded-lg py-1.5 text-xs font-bold transition-all ${
+                    !showCustomDate && form.deadline && Math.abs(new Date(form.deadline) - new Date(Date.now() + 86400000)) < 3600000
+                      ? "bg-amber-500 text-white shadow-[0_0_10px_rgba(245,158,11,0.4)] border-transparent"
+                      : "bg-white/5 border border-white/10 text-slate-400 hover:bg-white/10 hover:text-white"
+                  }`}
+                >
+                  24h
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setDeadlinePreset(3)}
+                  className={`flex-1 rounded-lg py-1.5 text-xs font-bold transition-all ${
+                    !showCustomDate && form.deadline && Math.abs(new Date(form.deadline) - new Date(Date.now() + 3 * 86400000)) < 3600000
+                      ? "bg-amber-500 text-white shadow-[0_0_10px_rgba(245,158,11,0.4)] border-transparent"
+                      : "bg-white/5 border border-white/10 text-slate-400 hover:bg-white/10 hover:text-white"
+                  }`}
+                >
+                  3d
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setDeadlinePreset(7)}
+                  className={`flex-1 rounded-lg py-1.5 text-xs font-bold transition-all ${
+                    !showCustomDate && form.deadline && Math.abs(new Date(form.deadline) - new Date(Date.now() + 7 * 86400000)) < 3600000
+                      ? "bg-amber-500 text-white shadow-[0_0_10px_rgba(245,158,11,0.4)] border-transparent"
+                      : "bg-white/5 border border-white/10 text-slate-400 hover:bg-white/10 hover:text-white"
+                  }`}
+                >
+                  1w
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowCustomDate(true)}
+                  className={`flex-1 rounded-lg py-1.5 text-xs font-bold transition-all ${
+                    showCustomDate
+                      ? "bg-white/20 text-white border-transparent"
+                      : "bg-white/5 border border-white/10 text-slate-400 hover:bg-white/10 hover:text-white"
+                  }`}
+                >
+                  Custom
+                </button>
+              </div>
+
+              {showCustomDate ? (
+                <Input
+                  type="datetime-local"
+                  value={form.deadline}
+                  onChange={(e) => update("deadline", e.target.value)}
+                  required
+                  min={new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16)}
+                  className="h-12 bg-black/40 border-white/10 text-white placeholder:text-slate-500 rounded-xl focus-visible:ring-amber-500 [color-scheme:dark]"
+                />
+              ) : (
+                <div className="h-12 bg-black/40 border border-white/10 rounded-xl flex items-center px-4">
+                  {form.deadline ? (
+                    <span className="text-white font-medium">
+                      {new Date(form.deadline).toLocaleString(undefined, {
+                        weekday: 'short',
+                        month: 'short',
+                        day: 'numeric',
+                        hour: 'numeric',
+                        minute: '2-digit'
+                      })}
+                    </span>
+                  ) : (
+                    <span className="text-slate-500">Select a deadline above</span>
+                  )}
+                </div>
+              )}
+              <p className="text-xs font-medium text-slate-500 pt-1">
                 Pick the exact due date & time. Stake goes to the pool if you miss it.
               </p>
             </div>
           </div>
 
           {/* Preview */}
-          <div className="rounded-2xl bg-slate-50 ring-1 ring-slate-200/70 p-5">
-            <div className="flex items-center justify-between mb-2">
-              <CategoryBadge category={form.category} />
-              <span className="flex items-center gap-1 font-semibold text-slate-900">
-                <Coins className="w-4 h-4 text-amber-500" />
-                {form.stake_amount || 0} <span className="text-xs text-slate-400 font-normal">USDC</span>
-              </span>
+          <div className="rounded-3xl glass-panel p-6 shadow-xl relative overflow-hidden group">
+            <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 to-orange-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+            <div className="relative z-10">
+              <div className="flex items-center justify-between mb-3">
+                <CategoryBadge category={form.category} />
+                <span className="flex items-center gap-1.5 font-black text-amber-400 text-lg">
+                  <Coins className="w-4 h-4" />
+                  {form.stake_amount || 0} <span className="text-xs text-slate-400 font-bold uppercase">USDC</span>
+                </span>
+              </div>
+              <p className="font-bold text-lg leading-snug text-white mb-2 line-clamp-1">
+                {form.title || "Your commitment title"}
+              </p>
+              <p className="text-sm text-slate-400 font-medium line-clamp-2">
+                {form.description || "Description preview..."}
+              </p>
             </div>
-            <p className="font-medium leading-snug text-slate-900">
-              {form.title || "Your commitment title"}
-            </p>
-            <p className="text-sm text-slate-500 mt-1 line-clamp-2">
-              {form.description || "Description preview..."}
-            </p>
           </div>
 
           <Button
             type="submit"
             disabled={loading}
-            className="w-full h-12 text-base bg-gradient-to-r from-purple-600 to-emerald-600 hover:from-purple-700 hover:to-emerald-700 text-white border-0"
+            className="w-full h-14 text-base font-bold bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-white shadow-[0_0_20px_rgba(16,185,129,0.3)] border-0 rounded-xl"
           >
             {loading ? (
-              <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Confirming on Solana...</>
+              <><Loader2 className="w-5 h-5 mr-2 animate-spin" /> Confirming on Solana...</>
             ) : (
-              <>Stake {form.stake_amount || 0} USDC (SPL) & commit</>
+              <>Stake {form.stake_amount || 0} USDC & commit</>
             )}
           </Button>
         </form>

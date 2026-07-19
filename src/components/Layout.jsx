@@ -17,18 +17,18 @@ export default function Layout() {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-slate-50/50">
+    <div className="min-h-screen">
       {/* Sidebar - desktop */}
-      <aside className="hidden md:flex fixed inset-y-0 left-0 w-64 flex-col border-r border-slate-200 bg-white">
-        <div className="flex items-center justify-between px-6 h-16 border-b border-slate-100">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
-              <Target className="w-4 h-4 text-primary-foreground" />
+      <aside className="hidden md:flex fixed top-6 bottom-6 left-6 w-64 flex-col rounded-3xl glass-panel z-50 overflow-hidden">
+        <div className="flex items-center justify-between px-6 h-24 border-b border-white/10">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 to-orange-600 flex items-center justify-center shadow-[0_0_15px_rgba(245,158,11,0.5)]">
+              <Target className="w-5 h-5 text-white" />
             </div>
-            <span className="font-semibold text-slate-900 tracking-tight">StakeOnIt</span>
+            <span className="font-bold text-xl text-white tracking-tight text-glow">StakeOnIt</span>
           </div>
         </div>
-        <nav className="flex-1 px-3 py-4 space-y-1">
+        <nav className="flex-1 px-4 py-6 space-y-2">
           {navItems.map((item) => (
             <NavLink
               key={item.to}
@@ -36,10 +36,10 @@ export default function Layout() {
               end={item.end}
               className={({ isActive }) =>
                 cn(
-                  "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors",
+                  "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-300",
                   isActive
-                    ? "bg-primary text-primary-foreground"
-                    : "text-slate-600 hover:bg-slate-100"
+                    ? "bg-white/10 text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.2)]"
+                    : "text-slate-400 hover:text-white hover:bg-white/5"
                 )
               }
             >
@@ -48,19 +48,23 @@ export default function Layout() {
             </NavLink>
           ))}
         </nav>
-        <div className="px-3 py-4 border-t border-slate-100">
-          <div className="flex items-center gap-2 px-3 py-2 mb-2 bg-gradient-to-r from-purple-500/10 to-emerald-500/10 rounded-lg border border-purple-500/20">
-            <div className="w-5 h-5 rounded-full bg-black flex items-center justify-center">
+        <div className="px-4 py-6 border-t border-white/10 bg-black/20">
+          <div className="flex items-center gap-3 px-3 py-3 mb-4 rounded-xl glass-panel relative overflow-hidden group">
+            <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 to-emerald-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            <div className="w-8 h-8 rounded-full bg-black border border-white/20 flex items-center justify-center shadow-[0_0_10px_rgba(16,185,129,0.3)] z-10">
               <span className="text-[10px] text-white font-bold tracking-tighter">SOL</span>
             </div>
-            <span className="text-xs font-semibold bg-gradient-to-r from-purple-600 to-emerald-600 bg-clip-text text-transparent">Powered by Solana Devnet</span>
+            <div className="z-10">
+              <p className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider mb-0.5">Network</p>
+              <span className="text-xs font-bold bg-gradient-to-r from-purple-400 to-emerald-400 bg-clip-text text-transparent">Solana Devnet</span>
+            </div>
           </div>
-          <div className="flex items-center gap-2 px-3 py-2">
-            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-violet-400 to-blue-500 flex items-center justify-center text-white text-xs font-semibold">
+          <div className="flex items-center gap-3 px-3 py-2">
+            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-violet-500 to-fuchsia-600 flex items-center justify-center text-white text-sm font-bold shadow-[0_0_10px_rgba(139,92,246,0.5)] border border-white/20">
               {(user?.full_name || user?.email || "U").charAt(0).toUpperCase()}
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-slate-900 truncate">
+              <p className="text-sm font-bold text-white truncate">
                 {user?.full_name || "You"}
               </p>
               <p className="text-xs text-slate-400 truncate">{user?.email}</p>
@@ -69,7 +73,7 @@ export default function Layout() {
           <Button
             variant="ghost"
             size="sm"
-            className="w-full justify-start text-slate-500 mt-1"
+            className="w-full justify-start text-slate-400 hover:text-white hover:bg-white/10 mt-2"
             onClick={() => logout()}
           >
             <LogOut className="w-4 h-4 mr-2" /> Sign out
@@ -78,14 +82,14 @@ export default function Layout() {
       </aside>
 
       {/* Mobile top bar */}
-      <header className="md:hidden sticky top-0 z-40 flex items-center justify-between h-14 px-4 bg-white border-b border-slate-200">
+      <header className="md:hidden sticky top-0 z-40 flex items-center justify-between h-16 px-4 glass-panel border-b-0 rounded-b-2xl">
         <Link to="/" className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-lg bg-primary flex items-center justify-center">
-            <Target className="w-3.5 h-3.5 text-primary-foreground" />
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-400 to-orange-600 flex items-center justify-center shadow-[0_0_10px_rgba(245,158,11,0.5)]">
+            <Target className="w-4 h-4 text-white" />
           </div>
-          <span className="font-semibold text-slate-900 tracking-tight">StakeOnIt</span>
+          <span className="font-bold text-white tracking-tight">StakeOnIt</span>
         </Link>
-        <Button asChild size="sm" className="bg-primary hover:bg-primary/90">
+        <Button asChild size="sm" className="bg-white/10 hover:bg-white/20 text-white border border-white/20">
           <Link to="/create">
             <Plus className="w-4 h-4 mr-1" /> New
           </Link>
@@ -93,7 +97,7 @@ export default function Layout() {
       </header>
 
       {/* Mobile bottom nav */}
-      <nav className="md:hidden fixed bottom-0 inset-x-0 z-40 flex items-center justify-around h-14 bg-white border-t border-slate-200">
+      <nav className="md:hidden fixed bottom-4 inset-x-4 z-40 flex items-center justify-around h-16 glass-panel rounded-2xl">
         {navItems.map((item) => (
           <NavLink
             key={item.to}
@@ -101,8 +105,8 @@ export default function Layout() {
             end={item.end}
             className={({ isActive }) =>
               cn(
-                "flex flex-col items-center gap-0.5 text-xs",
-                isActive ? "text-slate-900" : "text-slate-400"
+                "flex flex-col items-center gap-1 text-[10px] font-semibold transition-colors",
+                isActive ? "text-amber-400" : "text-slate-400"
               )
             }
           >
@@ -113,7 +117,7 @@ export default function Layout() {
       </nav>
 
       {/* Main */}
-      <main className="md:pl-64 pb-20 md:pb-0">
+      <main className="md:pl-72 md:pr-8 py-8 md:py-10 pb-24 md:pb-10 min-h-screen">
         <Outlet />
       </main>
     </div>

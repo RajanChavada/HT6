@@ -15,10 +15,10 @@ export default function CommitmentCard({ commitment }) {
   const totalPool = commitment.pool_total || commitment.stake_amount || 0;
   const tint =
     backTotal > doubtTotal
-      ? "bg-emerald-50/60 ring-emerald-200/60 hover:ring-emerald-300"
+      ? "bg-emerald-950/20 border-emerald-500/20 hover:border-emerald-500/50 shadow-[0_0_15px_rgba(16,185,129,0.05)] hover:shadow-[0_0_20px_rgba(16,185,129,0.15)]"
       : doubtTotal > backTotal
-        ? "bg-rose-50/60 ring-rose-200/60 hover:ring-rose-300"
-        : "bg-white ring-slate-200/70 hover:ring-primary/60";
+        ? "bg-rose-950/20 border-rose-500/20 hover:border-rose-500/50 shadow-[0_0_15px_rgba(244,63,94,0.05)] hover:shadow-[0_0_20px_rgba(244,63,94,0.15)]"
+        : "glass-panel glass-panel-hover";
 
   return (
     <motion.div
@@ -29,10 +29,11 @@ export default function CommitmentCard({ commitment }) {
     >
       <Link
         to={`/commitment/${commitment.id}`}
-        className={`block rounded-2xl ring-1 shadow-sm hover:shadow-md hover:ring-2 transition-all overflow-hidden ${tint}`}
+        className={`block rounded-3xl transition-all duration-500 overflow-hidden ${tint} relative group`}
       >
-        <div className="p-0">
-          <div className="p-5 pb-3">
+        <div className="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+        <div className="p-0 relative z-10">
+          <div className="p-6 pb-4">
             <div className="flex items-start justify-between gap-3 mb-3">
               <div className="flex items-center gap-2 flex-wrap">
                 <CategoryBadge category={commitment.category} />
@@ -40,37 +41,37 @@ export default function CommitmentCard({ commitment }) {
               </div>
             </div>
 
-            <h3 className="text-base font-semibold text-slate-900 leading-snug mb-1.5 line-clamp-2">
+            <h3 className="text-lg font-bold text-white leading-snug mb-1.5 line-clamp-2">
               {commitment.title}
             </h3>
             {commitment.description && (
-              <p className="text-sm text-slate-500 line-clamp-2 mb-2">
+              <p className="text-sm text-slate-400 line-clamp-2 mb-4">
                 {commitment.description}
               </p>
             )}
             
-            <div className="flex items-center gap-3 text-xs text-slate-500 mb-3">
-              <span className="flex items-center gap-1">
-                <Clock className={`w-3.5 h-3.5 ${urgent ? "text-rose-500" : "text-slate-400"}`} />
+            <div className="flex items-center gap-4 text-xs font-semibold text-slate-400 mb-2">
+              <span className="flex items-center gap-1.5">
+                <Clock className={`w-4 h-4 ${urgent ? "text-rose-500" : "text-amber-500"}`} />
                 {formatDeadline(commitment.deadline)}
               </span>
-              <span className="flex items-center gap-1">
-                <Users className="w-3.5 h-3.5 text-slate-400" />
-                {backersCount}
+              <span className="flex items-center gap-1.5">
+                <Users className="w-4 h-4 text-blue-500" />
+                {backersCount} {backersCount === 1 ? 'Backer' : 'Backers'}
               </span>
             </div>
           </div>
 
-          <div className="bg-[#0a0e14] text-white p-4">
-            <div className="mb-2 flex items-center justify-between">
-              <span className="text-xs text-slate-400 uppercase font-semibold tracking-wider">The Pot</span>
-              <div className="flex items-center gap-1 font-bold text-2xl text-amber-400">
+          <div className="bg-black/40 text-white p-5 pt-4 border-t border-white/5">
+            <div className="mb-3 flex items-center justify-between">
+              <span className="text-xs text-slate-500 uppercase font-bold tracking-widest">The Pot</span>
+              <div className="flex items-center gap-1.5 font-black text-2xl text-amber-400 text-glow">
                 <Coins className="w-5 h-5" />
-                {totalPool} <span className="text-sm text-slate-400 font-normal">USDC (SPL)</span>
+                {totalPool} <span className="text-xs text-slate-500 font-bold">USDC</span>
               </div>
             </div>
             
-            <div className="w-full mb-3 pointer-events-none">
+            <div className="w-full mb-4 pointer-events-none rounded-xl overflow-hidden ring-1 ring-white/5 bg-black/60 shadow-inner">
               <BlobVisualization pool={totalPool} title={commitment.title} interactive={false} />
             </div>
 

@@ -44,10 +44,10 @@ export default function Home() {
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-2xl md:text-3xl font-bold text-slate-900 tracking-tight">
+          <h1 className="text-3xl md:text-5xl font-extrabold text-white tracking-tighter mb-2 text-glow">
             Public Feed
           </h1>
-          <p className="text-slate-500 mt-1">Browse public commitments from the community. Stake on yourself — friends back you or doubt you.</p>
+          <p className="text-slate-400 text-sm md:text-base max-w-lg">Browse public commitments from the community. Stake on yourself — friends back you or doubt you.</p>
         </div>
         <Button asChild className="hidden md:flex bg-primary hover:bg-primary/90">
           <Link to="/create">
@@ -57,21 +57,28 @@ export default function Home() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-3 gap-3 md:gap-4 mb-8">
-        {stats.map((s) => (
-          <div key={s.label} className="rounded-2xl bg-white ring-1 ring-slate-200/70 p-4 md:p-5">
-            <s.icon className={`w-4 h-4 mb-2 ${s.color}`} />
-            <div className="flex items-baseline gap-1">
-              <span className="text-xl md:text-2xl font-bold text-slate-900">{s.value}</span>
-              {s.unit && <span className="text-xs text-slate-400">{s.unit}</span>}
+      <div className="grid grid-cols-3 gap-3 md:gap-6 mb-10">
+        {stats.map((s, idx) => (
+          <motion.div 
+            key={s.label}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: idx * 0.1 }}
+            className="glass-panel glass-panel-hover rounded-3xl p-5 md:p-6 relative overflow-hidden group"
+          >
+            <div className={`absolute -right-4 -top-4 w-24 h-24 rounded-full blur-3xl opacity-20 transition-opacity group-hover:opacity-40 bg-current ${s.color}`} />
+            <s.icon className={`w-5 h-5 mb-4 ${s.color} relative z-10`} />
+            <div className="flex items-baseline gap-1 relative z-10">
+              <span className="text-2xl md:text-4xl font-black text-white tracking-tighter">{s.value}</span>
+              {s.unit && <span className="text-xs text-slate-400 font-semibold">{s.unit}</span>}
             </div>
-            <p className="text-xs text-slate-500 mt-0.5">{s.label}</p>
-          </div>
+            <p className="text-xs font-semibold uppercase tracking-wider text-slate-500 mt-2 relative z-10">{s.label}</p>
+          </motion.div>
         ))}
       </div>
 
       {/* Filter tabs */}
-      <div className="flex items-center gap-1 mb-5 border-b border-slate-200">
+      <div className="flex items-center gap-2 mb-6 bg-white/5 p-1 rounded-2xl w-fit backdrop-blur-md border border-white/10">
         {[
           { key: "all", label: "All" },
           { key: "active", label: "🔥 Active" },
@@ -80,10 +87,10 @@ export default function Home() {
           <button
             key={tab.key}
             onClick={() => setFilter(tab.key)}
-            className={`px-4 py-2.5 text-sm font-medium border-b-2 transition-colors -mb-px ${
+            className={`px-5 py-2 text-sm font-semibold rounded-xl transition-all duration-300 ${
               filter === tab.key
-                ? "border-slate-900 text-slate-900"
-                : "border-transparent text-slate-400 hover:text-slate-600"
+                ? "bg-white/10 text-white shadow-lg"
+                : "text-slate-400 hover:text-white hover:bg-white/5"
             }`}
           >
             {tab.label}
@@ -92,23 +99,23 @@ export default function Home() {
       </div>
 
       {/* Search + category filter */}
-      <div className="space-y-3 mb-5">
-        <div className="relative">
-          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+      <div className="flex flex-col md:flex-row gap-3 mb-8 items-start md:items-center">
+        <div className="relative w-full md:w-64">
+          <Search className="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
           <Input
-            placeholder="Search goals by name..."
+            placeholder="Search goals..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="pl-9"
+            className="pl-11 bg-white/5 border-white/10 text-white placeholder:text-slate-500 rounded-xl h-11 focus-visible:ring-amber-500"
           />
         </div>
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-2 flex-1">
           <button
             onClick={() => setCategory("all")}
-            className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
+            className={`px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all duration-300 ${
               category === "all"
-                ? "bg-emerald-700 text-white"
-                : "bg-white text-slate-600 ring-1 ring-slate-200 hover:bg-slate-50"
+                ? "bg-amber-500 text-white shadow-[0_0_15px_rgba(245,158,11,0.4)]"
+                : "bg-white/5 text-slate-400 border border-white/10 hover:bg-white/10"
             }`}
           >
             All
@@ -117,10 +124,10 @@ export default function Home() {
             <button
               key={cat}
               onClick={() => setCategory(cat)}
-              className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
+              className={`px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all duration-300 ${
                 category === cat
-                  ? "bg-emerald-700 text-white"
-                  : "bg-white text-slate-600 ring-1 ring-slate-200 hover:bg-slate-50"
+                  ? "bg-amber-500 text-white shadow-[0_0_15px_rgba(245,158,11,0.4)]"
+                  : "bg-white/5 text-slate-400 border border-white/10 hover:bg-white/10 hover:text-white"
               }`}
             >
               {cat}
@@ -131,26 +138,26 @@ export default function Home() {
 
       {/* Grid */}
       {isLoading ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {[...Array(4)].map((_, i) => (
-            <div key={i} className="h-44 rounded-2xl bg-white ring-1 ring-slate-200/70 animate-pulse" />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {[...Array(6)].map((_, i) => (
+            <div key={i} className="h-[400px] rounded-3xl glass-panel animate-pulse opacity-50" />
           ))}
         </div>
       ) : visible.length === 0 ? (
-        <div className="text-center py-20">
-          <div className="w-14 h-14 rounded-2xl bg-slate-100 flex items-center justify-center mx-auto mb-4">
-            <Flame className="w-6 h-6 text-slate-400" />
+        <div className="text-center py-20 glass-panel rounded-3xl">
+          <div className="w-16 h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mx-auto mb-6 shadow-xl">
+            <Flame className="w-8 h-8 text-amber-500" />
           </div>
-          <h3 className="font-semibold text-slate-900 mb-1">No commitments yet</h3>
-          <p className="text-sm text-slate-500 mb-6">Be the first to stake on a goal.</p>
-          <Button asChild className="bg-primary hover:bg-primary/90">
+          <h3 className="text-xl font-bold text-white mb-2 tracking-tight">No commitments yet</h3>
+          <p className="text-slate-400 mb-8 max-w-md mx-auto">The arena is empty. Be the first to stake on a goal and let the community back you.</p>
+          <Button asChild className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-white shadow-lg border-0">
             <Link to="/create">
               <Plus className="w-4 h-4 mr-1.5" /> Create a commitment
             </Link>
           </Button>
         </div>
       ) : (
-        <motion.div layout className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {visible.map((c) => (
             <CommitmentCard key={c.id} commitment={c} />
           ))}
