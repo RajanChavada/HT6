@@ -22,6 +22,26 @@ export default function Home() {
 
   // Silently spawn recurring commitments on load
   useEffect(() => {
+    // ONE-TIME SEED SCRIPT
+    if (!localStorage.getItem("seeded_david_mock_300")) {
+      localStorage.removeItem("stakes_commitments");
+      const mockCommitment = {
+        id: "mock_david",
+        title: "David will finish the frontend for hackthe6ix",
+        pool_total: 300,
+        stake_amount: 300,
+        status: "active",
+        category: "Career",
+        backers: [],
+        created_date: new Date().toISOString(),
+        created_by_id: "user_david",
+        deadline: new Date(Date.now() + 86400000 * 7).toISOString(),
+      };
+      localStorage.setItem("stakes_commitments", JSON.stringify([mockCommitment]));
+      localStorage.setItem("seeded_david_mock_300", "true");
+      window.location.reload();
+    }
+
     base44.functions.invoke("spawn-recurring").catch((err) => {
       console.error("Failed to spawn recurring commitments:", err);
     });
